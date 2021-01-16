@@ -14,6 +14,19 @@ export class RingfencePluginWeb extends WebPlugin {
             name: 'RingfencePlugin',
             platforms: ['web'],
         });
+        /*
+          async getContacts(filter:String): Promise<{results: any[] }> {
+            console.log('filter: ', filter);
+            return {
+              results: [{
+                firstName: 'Dummy',
+                lastName: 'Entry',
+                telephone: '123456'
+              }]
+            }
+          }
+          */
+        this.jsonURL = "https://api.jsonbin.io/v3/b/600033fb68f9f835a3df124a/latest>";
     }
     echo(options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,6 +36,11 @@ export class RingfencePluginWeb extends WebPlugin {
     }
     enableUserLocation() {
         return __awaiter(this, void 0, void 0, function* () { });
+    }
+    passJson(jsonString) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(jsonString);
+        });
     }
 }
 const RingfencePlugin = new RingfencePluginWeb();

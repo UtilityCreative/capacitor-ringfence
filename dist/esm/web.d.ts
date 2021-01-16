@@ -8,6 +8,8 @@ export declare class RingfencePluginWeb extends WebPlugin implements RingfencePl
         value: string;
     }>;
     enableUserLocation(): Promise<void>;
+    jsonURL: string;
+    passJson(jsonString: String): Promise<void>;
 }
 declare const RingfencePlugin: RingfencePluginWeb;
 export { RingfencePlugin };

@@ -10,4 +10,5 @@ export interface RingfencePluginPlugin {
         value: string;
     }>;
     enableUserLocation(): void;
+    passJson(jsonString: string): void;
 }

@@ -13,11 +13,11 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
 
     let locationManager:CLLocationManager = CLLocationManager()
     
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.success([
-            "value": value
-        ])
+    
+    @objc func passJson(_ call: CAPPluginCall) {
+        let value = call.getString("jsonString") ?? ""
+        print("***********************json string loaded*************************")
+        print(value)
     }
     
     @objc override public func load() {

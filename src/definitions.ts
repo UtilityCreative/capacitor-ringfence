@@ -6,6 +6,8 @@ declare module '@capacitor/core' {
 
 export interface RingfencePluginPlugin {
   enableUserLocation(): void;
-  //getContacts(filter: string): Promise<{results: any[]}>
-  passJson(jsonString: string): void
+  passJson(options: { jsonPassed: string }): void
 }
+
+
+

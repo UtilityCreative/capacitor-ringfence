@@ -15,26 +15,58 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
     
     
     @objc func passJson(_ call: CAPPluginCall) {
-        let value = call.getString("jsonString") ?? ""
-        print("***********************json string loaded*************************")
-        print(value)
+        let result = call.getString("jsonPassed") ?? ""
+        var propertiesParsed: JsonPassed! = nil
+        
+        do {
+            if let data = result.data(using: String.Encoding.utf8){
+                propertiesParsed = try decodeGeofenceJson(data:data)
+                if let locations:[Record] = propertiesParsed.geofenceData?.record {
+                    print(locations[0].lat as Any)
+                    // geofence data is passed from ionic app to here
+                    setupGeolocations(locations: locations)
+                }
+            }
+            
+        }
+        catch let DecodingError.dataCorrupted(context) {
+            print(context)
+        } catch let DecodingError.keyNotFound(key, context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.valueNotFound(value, context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch let DecodingError.typeMismatch(type, context)  {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+        } catch {
+            print("error: ", error)
+        }
+
     }
     
+    func decodeGeofenceJson(data:Data) throws -> JsonPassed {
+        guard let geofencesParsed = try JSONDecoder().decode(JsonPassed?.self, from: data) else { throw ValidationError.typeMismatch
+        }
+        return geofencesParsed
+    }
+    /*
     @objc override public func load() {
         // On load do the geolocation setup
         setupGeolocations()
     }
+    */
     
     
-    
-    func setupGeolocations() {
+    func setupGeolocations(locations:[Record]) {
         // Make sure the devices supports region monitoring.
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
             
             // Called when the plugin is first constructed in the bridge
             requestPermissionNotifications()
                     
-            // Do any additional setup after loading the view, typically from a nib.
+            // Do any additional setup after loading the view
             
             locationManager.delegate = self
             
@@ -43,20 +75,16 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             locationManager.startUpdatingLocation()
             
             locationManager.distanceFilter = 100
-            
-            let locations:[[Any]] = [
-                [-37.82294808451516,144.9613830269109, "Bar 1"],
-                [-37.82495985400438, 144.975384313801, "Bar 2"]
-            ]
-            
-            for location in locations{
-                let geoFenceRegion:CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake(location[0] as! CLLocationDegrees, location[1] as! CLLocationDegrees), radius: 100, identifier: location[2] as! String)
-                geoFenceRegion.notifyOnEntry = true
-                geoFenceRegion.notifyOnExit = false
-                locationManager.startMonitoring(for: geoFenceRegion)
+           
+            for (index, location) in locations.enumerated(){
+                if index < 21 {
+                    let geoFenceRegion:CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake((location.lat! as NSString).doubleValue ,  (location.long! as NSString).doubleValue), radius: 100, identifier: (location.name)!)
+                    geoFenceRegion.notifyOnEntry = true
+                    geoFenceRegion.notifyOnExit = false
+                    locationManager.startMonitoring(for: geoFenceRegion)
+                }
             }
 
-            print("Load location manager")
         }
     }
     
@@ -179,3 +207,38 @@ class ViewController: UIViewController{
     }
 }
 
+
+enum ValidationError: LocalizedError {
+    case inValidValue
+    case typeMismatch
+}
+
+class JsonPassed: Codable {
+    let geofenceData: GeofenceData?
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let geofenceData = try container.decodeIfPresent(GeofenceData.self, forKey: .geofenceData) { self.geofenceData = geofenceData } else { self.geofenceData = nil}
+    }
+}
+
+class GeofenceData: Codable {
+    let record: [Record]?
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let record = try container.decodeIfPresent([Record].self, forKey: .record) { self.record = record } else { self.record = []}
+    }
+}
+
+class Record: Codable {
+    let name:String?
+    let lat:String?
+    let long:String?
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let name = try container.decodeIfPresent(String.self, forKey: .name) { self.name = name } else { self.name = ""}
+        if let lat = try container.decodeIfPresent(String.self, forKey: .lat) { self.lat = lat } else { self.lat = ""}
+        if let long = try container.decodeIfPresent(String.self, forKey: .long) { self.long = long } else { self.long = ""}
+    }
+}

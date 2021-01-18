@@ -4,11 +4,8 @@ declare module '@capacitor/core' {
     }
 }
 export interface RingfencePluginPlugin {
-    echo(options: {
-        value: string;
-    }): Promise<{
-        value: string;
-    }>;
     enableUserLocation(): void;
-    passJson(jsonString: string): void;
+    passJson(options: {
+        jsonPassed: string;
+    }): void;
 }

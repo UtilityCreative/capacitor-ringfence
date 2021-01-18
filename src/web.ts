@@ -1,6 +1,7 @@
 import { WebPlugin } from '@capacitor/core';
 import { RingfencePluginPlugin } from './definitions';
 
+
 export class RingfencePluginWeb extends WebPlugin implements RingfencePluginPlugin {
   constructor() {
     super({
@@ -11,11 +12,10 @@ export class RingfencePluginWeb extends WebPlugin implements RingfencePluginPlug
 
   async enableUserLocation(){}
 
-  jsonURL = "https://api.jsonbin.io/v3/b/600033fb68f9f835a3df124a/latest>"
-  async passJson(jsonString:String) {
+  // async passJson(jsonString:object) {
+  async passJson(_: { jsonPassed: string }) {
     // This web equivelant function isn't used (because geofence only works within native plugin) however it must
     // must remain here as an empty function because it is still called when in web context
-    console.log(jsonString);
   }
 }
 

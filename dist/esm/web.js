@@ -14,32 +14,15 @@ export class RingfencePluginWeb extends WebPlugin {
             name: 'RingfencePlugin',
             platforms: ['web'],
         });
-        /*
-          async getContacts(filter:String): Promise<{results: any[] }> {
-            console.log('filter: ', filter);
-            return {
-              results: [{
-                firstName: 'Dummy',
-                lastName: 'Entry',
-                telephone: '123456'
-              }]
-            }
-          }
-          */
-        this.jsonURL = "https://api.jsonbin.io/v3/b/600033fb68f9f835a3df124a/latest>";
-    }
-    echo(options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log('ECHO', options);
-            return options;
-        });
     }
     enableUserLocation() {
         return __awaiter(this, void 0, void 0, function* () { });
     }
-    passJson(jsonString) {
+    // async passJson(jsonString:object) {
+    passJson(_) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(jsonString);
+            // This web equivelant function isn't used (because geofence only works within native plugin) however it must
+            // must remain here as an empty function because it is still called when in web context
         });
     }
 }

@@ -78,7 +78,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
            
             for (index, location) in locations.enumerated(){
                 if index < 21 {
-                    let geoFenceRegion:CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake((location.lat! as NSString).doubleValue ,  (location.long! as NSString).doubleValue), radius: 100, identifier: (location.name)!)
+                    let geoFenceRegion:CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake((location.lat! as NSString).doubleValue ,  (location.long! as NSString).doubleValue), radius: ((location.radius! as NSString).doubleValue), identifier: (location.name)!)
                     geoFenceRegion.notifyOnEntry = true
                     geoFenceRegion.notifyOnExit = false
                     locationManager.startMonitoring(for: geoFenceRegion)
@@ -171,7 +171,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             
             let content = UNMutableNotificationContent()
             content.title = eventTitle
-            content.body = "You've entered a new region"
+            content.body = "Be Wise - look after your mates"
         content.sound = UNNotificationSound.default
             
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
@@ -234,11 +234,13 @@ class Record: Codable {
     let name:String?
     let lat:String?
     let long:String?
+    let radius:String?
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let name = try container.decodeIfPresent(String.self, forKey: .name) { self.name = name } else { self.name = ""}
         if let lat = try container.decodeIfPresent(String.self, forKey: .lat) { self.lat = lat } else { self.lat = ""}
         if let long = try container.decodeIfPresent(String.self, forKey: .long) { self.long = long } else { self.long = ""}
+        if let radius = try container.decodeIfPresent(String.self, forKey: .radius) { self.radius = radius } else { self.radius = ""}
     }
 }

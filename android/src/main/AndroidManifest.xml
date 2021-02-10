@@ -1,8 +1,9 @@
 
   <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.bewise.ringfence">
-      <!--application>
-          <receiver android:enabled="true" android:name="GeofenceBroadcastReceiver" android:exported="true">
+
+      <application>
+          <receiver android:enabled="true" android:name=".GeofenceBroadcastReceiver" android:exported="true">
               <intent-filter>
                   <action android:name="android.intent.action.GEOFENCE_TRANSITION_ENTER"/>
               </intent-filter>
@@ -19,11 +20,17 @@
                   <action android:name="com.bewise.ringfence.ACTION_RECEIVE_GEOFENCE"/>
               </intent-filter>
           </receiver>
-        </application-->
-      <!--uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        </application>
+
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
       <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /-->
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+      <uses-feature android:name="android.hardware.location.gps" />
+      <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
   </manifest>
   

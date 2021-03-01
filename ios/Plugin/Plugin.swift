@@ -99,7 +99,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
   
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
             print("Entered: \(region.identifier)")
-            postLocalNotifications(eventTitle: "You have entered: \(region.identifier) - remember to look after your mates")
+            postLocalNotifications(eventTitle: "Heading out to \(region.identifier)?")
     }
         
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -171,7 +171,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             
             let content = UNMutableNotificationContent()
             content.title = eventTitle
-            content.body = "Be Wise - look after your mates"
+            content.body = "Have a great time and always look out for yourself and your mates when you’re out."
         content.sound = UNNotificationSound.default
             
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)

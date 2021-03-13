@@ -17,7 +17,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
     @objc func passJson(_ call: CAPPluginCall) {
         let result = call.getString("jsonPassed") ?? ""
         var propertiesParsed: JsonPassed! = nil
-        
+
         do {
             if let data = result.data(using: String.Encoding.utf8){
                 propertiesParsed = try decodeGeofenceJson(data:data)
@@ -69,12 +69,14 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             // Do any additional setup after loading the view
             
             locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             
             locationManager.requestAlwaysAuthorization()
             
             locationManager.startUpdatingLocation()
             
-            locationManager.distanceFilter = 100
+            locationManager.distanceFilter = kCLDistanceFilterNone
+            locationManager.activityType = CLActivityType.other
            
             for (index, location) in locations.enumerated(){
                 if index < 21 {
@@ -98,12 +100,10 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
     }
   
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-            print("Entered: \(region.identifier)")
             postLocalNotifications(eventTitle: "You have entered: \(region.identifier) - remember to look after your mates")
     }
         
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-            print("Exited: \(region.identifier)")
             postLocalNotifications(eventTitle: "You have exited: \(region.identifier)")
     }
     

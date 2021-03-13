@@ -130,7 +130,7 @@ public class RingfencePlugin extends Plugin {
         ArrayList<Geofence> geofenceArray = new ArrayList<>();
         // Build our geofence (we can run this on a loop to create multiple Geofences and add them to an ArrayList
         for(GeoItem geoitem : geofences){
-            Geofence geofence = geofenceHelper.getGeofence(geoitem.getId(), geoitem.getlatlong(), geoitem.getRadius(), Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL );
+            Geofence geofence = geofenceHelper.getGeofence(geoitem.getId(), geoitem.getlatlong(), geoitem.getRadius(), Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL);
             geofenceArray.add(geofence);
         }
 

@@ -41,6 +41,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
                 Log.i(TAG, "___________________ GEOFENCE_TRANSITION_ENTER ____________________ ");
+                notificationHelper.sendNotification("Be wise", "Remember to look after your mates");
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
                 Log.i(TAG, "___________________ GEOFENCE_TRANSITION_DWELL ____________________ ");

@@ -35,7 +35,7 @@ public class GeofenceHelper extends ContextWrapper {
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build();
     }
-
+    // .setNotificationResponsiveness(5000)
     // Sets up the trigger request
     public GeofencingRequest getGeofencingRequest(ArrayList<Geofence> geofenceList) {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();

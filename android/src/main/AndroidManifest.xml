@@ -10,9 +10,9 @@
               <intent-filter>
                   <action android:name="android.intent.action.GEOFENCE_TRANSITION_DWELL"/>
               </intent-filter>
-              <intent-filter>
+              <!--intent-filter>
                   <action android:name="android.intent.action.GEOFENCE_TRANSITION_EXIT"/>
-              </intent-filter>
+              </intent-filter-->
               <intent-filter>
                   <action android:name="android.intent.action.ACTION_PROCESS_LOCATION"/>
               </intent-filter>

@@ -61,8 +61,7 @@ public class RingfencePlugin extends Plugin {
             geofences = new ArrayList<>();
             // Build the geofences Array with class mappings of the JSON object passed from ionic
             for(int i=0;i<geofenceArray.length();i++){
-                Double[] latlong = {Double.valueOf(geofenceArray.getJSONObject(i).getString("lat")), Double.valueOf(geofenceArray.getJSONObject(i).getString("long"))};
-
+                Double[] latlong = {Double.parseDouble(geofenceArray.getJSONObject(i).getString("lat")), Double.parseDouble(geofenceArray.getJSONObject(i).getString("long"))};
                 GeoItem geoObj = new GeoItem(geofenceArray.getJSONObject(i).getString("name"), latlong, Integer.parseInt(geofenceArray.getJSONObject(i).getString("radius")));
                 geofences.add(geoObj);
             }

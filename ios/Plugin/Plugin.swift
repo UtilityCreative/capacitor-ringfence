@@ -22,7 +22,6 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             if let data = result.data(using: String.Encoding.utf8){
                 propertiesParsed = try decodeGeofenceJson(data:data)
                 if let locations:[Record] = propertiesParsed.geofenceData?.record {
-                    print(locations[0].lat as Any)
                     // geofence data is passed from ionic app to here
                     setupGeolocations(locations: locations)
                 }
@@ -68,15 +67,21 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                     
             // Do any additional setup after loading the view
             
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            // locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
             
             locationManager.requestAlwaysAuthorization()
             
             locationManager.startUpdatingLocation()
             
             locationManager.distanceFilter = kCLDistanceFilterNone
-            locationManager.activityType = CLActivityType.other
+
+            // locationManager.activityType = CLActivityType.other
+            locationManager.activityType = CLActivityType.fitness
+            
+            // added this for more positive background running
+            locationManager.pausesLocationUpdatesAutomatically = false
+            locationManager.delegate = self
            
             for (index, location) in locations.enumerated(){
                 if index < 21 {
@@ -138,8 +143,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                                     
                                     if UIApplication.shared.canOpenURL(settingsUrl) {
                                         UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                                            // Checking for setting is opened or not
-                                            print("Setting is opened: \(success)")
+                                            
                                         })
                                     }
                                     UserDefaults.standard.set(true, forKey: "PREF_PUSH_NOTIFICATIONS")
@@ -174,7 +178,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             content.body = "Be Wise - look after your mates"
         content.sound = UNNotificationSound.default
             
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
             
             let notificationRequest:UNNotificationRequest = UNNotificationRequest(identifier: "Region", content: content, trigger: trigger)
             
@@ -184,28 +188,16 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                     print(error)
                 }
                 else{
-                    print("added")
+                    print("notification added")
                 }
             })
         }
     
     
-    var time: Date?
-    @objc func refreshGeolocations() {
-        time = Date()
-        print("Time now is \(String(describing: time))")
-    }
+    
 }
 
 
-
-class ViewController: UIViewController{
-    var time: Date?
-    func refreshGeolocations() {
-        time = Date()
-        print("Time now is \(String(describing: time))")
-    }
-}
 
 
 enum ValidationError: LocalizedError {

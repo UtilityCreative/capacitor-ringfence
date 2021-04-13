@@ -30,14 +30,20 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             return;
         }
 
+        int transitionType = geofencingEvent.getGeofenceTransition();
+        if (transitionType == Geofence.GEOFENCE_TRANSITION_ENTER ||
+                transitionType == Geofence.GEOFENCE_TRANSITION_DWELL) {
+            // List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
 
-        List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
-        for (Geofence geofence: geofenceList) {
-            Log.i(TAG, "onReceive: " + geofence.getRequestId());
+            notificationHelper.sendNotification("Be wise", "Remember to look after your mates");
         }
 
-        int transitionType = geofencingEvent.getGeofenceTransition();
 
+
+
+
+
+        /*
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
                 Log.i(TAG, "___________________ GEOFENCE_TRANSITION_ENTER ____________________ ");
@@ -48,6 +54,6 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 notificationHelper.sendNotification("Be wise", "Remember to look after your mates");
                 break;
         }
-
+*/
     }
 }

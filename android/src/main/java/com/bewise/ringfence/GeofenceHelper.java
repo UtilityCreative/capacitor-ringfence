@@ -26,8 +26,7 @@ public class GeofenceHelper extends ContextWrapper {
 
     // Creates our geofence by passing in the latlong and radius parameters
     public Geofence getGeofence(String geoId, Double latlong[], float radius, int transitionTypes) {
-        radius = radius + 100;
-        Log.i(TAG, "Setup latlong == "+latlong[0]+" / "+latlong[1]+" radius == "+radius);
+        radius = radius + 35;
         return new Geofence.Builder()
                 .setCircularRegion(latlong[0], latlong[1], radius)
                 .setRequestId(geoId)

@@ -12,8 +12,8 @@ import UserNotifications
 public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotificationCenterDelegate {
 
     let locationManager:CLLocationManager = CLLocationManager()
-    
-    
+
+
     @objc func passJson(_ call: CAPPluginCall) {
         let result = call.getString("jsonPassed") ?? ""
         var propertiesParsed: JsonPassed! = nil
@@ -26,7 +26,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                     setupGeolocations(locations: locations)
                 }
             }
-            
+
         }
         catch let DecodingError.dataCorrupted(context) {
             print(context)
@@ -44,7 +44,7 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
         }
 
     }
-    
+
     func decodeGeofenceJson(data:Data) throws -> JsonPassed {
         guard let geofencesParsed = try JSONDecoder().decode(JsonPassed?.self, from: data) else { throw ValidationError.typeMismatch
         }
@@ -56,33 +56,33 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
         setupGeolocations()
     }
     */
-    
-    
+
+
     func setupGeolocations(locations:[Record]) {
         // Make sure the devices supports region monitoring.
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-            
+
             // Called when the plugin is first constructed in the bridge
             requestPermissionNotifications()
-                    
+
             // Do any additional setup after loading the view
-            
+
             // locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            
+
             locationManager.requestAlwaysAuthorization()
-            
+
             locationManager.startUpdatingLocation()
-            
+
             locationManager.distanceFilter = kCLDistanceFilterNone
 
             // locationManager.activityType = CLActivityType.other
             locationManager.activityType = CLActivityType.fitness
-            
+
             // added this for more positive background running
             locationManager.pausesLocationUpdatesAutomatically = false
             locationManager.delegate = self
-           
+
             for (index, location) in locations.enumerated(){
                 if index < 21 {
                     let geoFenceRegion:CLCircularRegion = CLCircularRegion(center: CLLocationCoordinate2DMake((location.lat! as NSString).doubleValue ,  (location.long! as NSString).doubleValue), radius: ((location.radius! as NSString).doubleValue), identifier: (location.name)!)
@@ -94,34 +94,34 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
 
         }
     }
-    
-    
-    
+
+
+
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         for currentLocation in locations{
             print("\(String(describing: index)): \(currentLocation)")
             // "0: [locations]"
         }
     }
-  
+
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-            postLocalNotifications(eventTitle: "You have entered: \(region.identifier) - remember to look after your mates")
+            postLocalNotifications(eventTitle: "Heading out to \(region.identifier)?")
     }
-        
+
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
             postLocalNotifications(eventTitle: "You have exited: \(region.identifier)")
     }
-    
-    
-    
-    
+
+
+
+
     public func requestPermissionNotifications(){
             let application =  UIApplication.shared
-            
+
             if #available(iOS 10.0, *) {
                 // For iOS 10 display notification (sent via APNS)
                 UNUserNotificationCenter.current().delegate = self
-                
+
                 let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
                 UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { (isAuthorized, error) in
                     if( error != nil ){
@@ -140,10 +140,10 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                                     guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
                                         return
                                     }
-                                    
+
                                     if UIApplication.shared.canOpenURL(settingsUrl) {
                                         UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                                            
+
                                         })
                                     }
                                     UserDefaults.standard.set(true, forKey: "PREF_PUSH_NOTIFICATIONS")
@@ -168,20 +168,20 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
             }
         }
 
-        
-        
+
+
        public func postLocalNotifications(eventTitle:String){
             let center = UNUserNotificationCenter.current()
-            
+
             let content = UNMutableNotificationContent()
             content.title = eventTitle
-            content.body = "Be Wise - look after your mates"
+            content.body = "Have a great time and always look out for yourself and your mates when you’re out."
         content.sound = UNNotificationSound.default
-            
+
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5.0, repeats: false)
-            
+
             let notificationRequest:UNNotificationRequest = UNNotificationRequest(identifier: "Region", content: content, trigger: trigger)
-            
+
             center.add(notificationRequest, withCompletionHandler: { (error) in
                 if let error = error {
                     // Something went wrong
@@ -192,9 +192,9 @@ public class RingfencePlugin: CAPPlugin, CLLocationManagerDelegate, UNUserNotifi
                 }
             })
         }
-    
-    
-    
+
+
+
 }
 
 
@@ -215,7 +215,7 @@ class JsonPassed: Codable {
 
 class GeofenceData: Codable {
     let record: [Record]?
-    
+
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let record = try container.decodeIfPresent([Record].self, forKey: .record) { self.record = record } else { self.record = []}
@@ -227,7 +227,7 @@ class Record: Codable {
     let lat:String?
     let long:String?
     let radius:String?
-    
+
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let name = try container.decodeIfPresent(String.self, forKey: .name) { self.name = name } else { self.name = ""}
